@@ -8,7 +8,7 @@
   font-family: 'Inter', sans-serif;
   overflow: hidden;
   /* Optional: Background image based on the screenshot */
-  background: url('public/img/fondo5.jpg') no-repeat center center/cover;
+  background: url('/img/fondo5.jpg') no-repeat center center/cover;
 }
 
 .auth-container {
