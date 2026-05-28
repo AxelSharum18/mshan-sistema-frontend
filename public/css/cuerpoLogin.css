@@ -1,0 +1,277 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+h2, a, p, button, li{
+    font-family: 'Roboto Condensed', sans-serif;
+}
+body{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Montserrat", sans-serif;
+    background-image: url("../../images/fondo1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.container-login{
+    
+    width: 800px;
+    height: 500px;
+    display: flex;
+    position: relative;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.container-form{
+    width: 100%;
+    overflow: hidden;
+    
+}
+.container-form a img{
+    width: auto;
+    height: 120px;
+    border-radius: 100px;
+}
+
+.container-form form{
+   
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease-in-out;
+}
+.container-form .text-center{
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+.social-networks{
+  
+    font-size: 18px;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.social-networks i{
+    cursor: pointer;
+    border: 1px solid #cac9c9;
+    border-radius: 6px;
+    padding: 6px;
+    transition: 0.3s;
+}
+.form-group{
+      
+      width: 300px;
+      height: 40px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      background-color: #EEEEEE;
+}
+.form-group input{
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    background-color: inherit;
+}
+
+.container-form a{
+    color: black;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+.container-form .form-login a{
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 12px;
+    color: rgb(43, 43, 43);
+}
+.container-form .form-register a{
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 12px;
+    color: rgb(43, 43, 43);
+}
+
+.button{
+    width: 170px;
+    height: 45px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #000000;
+    color: white;
+}
+.button:hover{
+    background-color: #2b2b2b;
+    transition: 0.3s;
+}
+
+.form-register{
+    transform: translateX(-100%);
+    
+}
+
+.container-login.toggle .form-login{
+    transform:translateX(100%);
+    transition: 0.5s;
+}
+.container-login.toggle .form-register{
+    transform: translateX(0);
+    transition: 0.5s;
+}
+
+/*welcome*/
+.container-welcome{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    background-color: #1f1f1f;
+    display: flex;
+    align-items: center;
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out, border-radius 0.5s ease-in-out;
+    overflow: hidden;
+    border-radius: 50% 0 0 50%;
+}
+.container-login.toggle .container-welcome{
+    transform: translateX(0);
+    border-radius: 0 50% 50% 0;
+     background-color: #000000;
+    
+}
+.container-welcome .button{
+    background-color: transparent;
+    
+}
+.container-welcome .welcome{
+    
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 0 40px;
+    color: white;
+    transition: transform 0.5s ease-in-out;
+
+}
+.welcome-login{
+    transform: translateX(100%);
+}
+.container-welcome h2{
+    font-size: 40px;
+    font-weight: 700;
+    text-align: center;
+}
+.container-welcome p{
+    font-size: 14px;
+    text-align: center;
+}
+
+.container-welcome .button{
+    border: 2px solid white;
+}
+.container-welcome .button:hover{
+    background-color: white;
+    color: #000000;
+    transition: 0.3s;
+}
+
+.container-login.toggle .welcome-login{
+    transform: translateX(0);
+    
+}
+.container-login.toggle .welcome-register{
+    transform: translateX(-100%);
+    
+}
+
+.password-group{
+    position: relative;
+}
+
+.toggle-password{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+}
+
+
+@media (max-width: 768px) {
+    .container-login {
+        width: 95%;
+        max-width: 400px; /* Tamaño tipo tarjeta móvil */
+        height: auto;
+        min-height: 550px;
+        flex-direction: column; /* Apilar elementos */
+        overflow: hidden;
+    }
+
+    .container-form {
+        width: 100%;
+        height: 100%;
+        padding: 40px 20px;
+    }
+
+    /* Ocultamos el panel de bienvenida complejo en móvil para simplificar */
+    /* O lo convertimos en un banner pequeño */
+    .container-welcome {
+        display: none; /* En móvil es mejor usar un link simple para alternar */
+    }
+
+    /* Ajuste de formularios para que ocupen todo el ancho */
+    .form-register {
+        transform: translateY(100%); /* Ahora se mueve de abajo hacia arriba */
+        position: absolute;
+        width: 100%;
+        background: white;
+        left: 0;
+        top: 0;
+    }
+
+    /* Animaciones verticales para móvil */
+    .container-login.toggle .form-login {
+        transform: translateY(-100%);
+    }
+
+    .container-login.toggle .form-register {
+        transform: translateY(0);
+    }
+
+    /* Mostrar botones de alternativa dentro del formulario en móvil */
+    /* Para esto agregaremos unos enlaces extra en el HTML */
+    .mobile-switch {
+        display: block !important;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #000;
+        text-decoration: none;
+        font-weight: bold;
+    }
+}
+
+/* Ocultar link de switch en escritorio */
+.mobile-switch {
+    display: none;
+}
