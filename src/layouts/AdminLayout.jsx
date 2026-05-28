@@ -15,6 +15,12 @@ const AdminLayout = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const isMobile = window.innerWidth <= 768;
+  const handleMobileNavigation = () => {
+  if (isMobile) {
+    setIsMobileSidebarOpen(false);
+  }
+};
+
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -77,6 +83,7 @@ const AdminLayout = () => {
 }`}
         onMouseEnter={() => !isMobile && setIsSidebarHovered(true)}
         onMouseLeave={() => !isMobile && setIsSidebarHovered(false)}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="sidebar-logo">
           <div className="logo-icon">M</div>
@@ -89,6 +96,7 @@ const AdminLayout = () => {
               to={item.path} 
               key={index}
               end={item.end || false}
+              onClick={handleMobileNavigation}
               className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
             >
               <div className="nav-icon">{item.icon}</div>
@@ -99,7 +107,11 @@ const AdminLayout = () => {
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="main-content">
+      <main className="main-content" onClick={() => {
+    if (isMobileSidebarOpen && isMobile) {
+      setIsMobileSidebarOpen(false);
+    }
+  }}>
         
         {/* TOPBAR */}
         <header className="topbar">
