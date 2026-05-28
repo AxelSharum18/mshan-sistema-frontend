@@ -84,25 +84,25 @@ const MovimientosPage = () => {
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar Movimiento Manual">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label className="form-label">Tipo de Movimiento</label>
+                        <label>Tipo de Movimiento</label>
                         <select className="form-select" value={tipo} onChange={(e) => setTipo(e.target.value)}>
                             <option value="INGRESO">INGRESO</option>
                             <option value="EGRESO">EGRESO</option>
                         </select>
                     </div>
                     <div className="mb-3">
-                        <label className="form-label">Monto (S/)</label>
+                        <label>Monto (S/)</label>
                         <input type="number" step="0.01" className="form-control" value={monto} onChange={(e) => setMonto(e.target.value)} required />
                     </div>
                     <div className="mb-3">
-                        <label className="form-label">Método de Pago</label>
+                        <label>Método de Pago</label>
                         <select className="form-select" value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)}>
                             <option value="EFECTIVO">Efectivo</option>
                             <option value="YAPE">Yape / Plin / Transferencia</option>
                         </select>
                     </div>
                     <div className="mb-3">
-                        <label className="form-label">Descripción</label>
+                        <label>Descripción</label>
                         <textarea className="form-control" rows="3" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} required></textarea>
                     </div>
                     <div className="text-end mt-4">

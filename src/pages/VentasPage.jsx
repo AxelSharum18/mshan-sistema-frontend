@@ -397,21 +397,21 @@ const VentasPage = () => {
         <form onSubmit={handleSubmit}>
           <div className="row mb-3 g-3">
             <div className="col-md-6">
-              <label className="form-label text-dark">Cliente</label>
+              <label>Cliente</label>
               <select className="form-select" value={clienteId} onChange={e => setClienteId(e.target.value)} required>
                 <option value="">Seleccione cliente...</option>
                 {clientes.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
               </select>
             </div>
             <div className="col-md-6">
-              <label className="form-label text-dark">Tipo de Venta</label>
+              <label>Tipo de Venta</label>
               <select className="form-select" value={tipoVenta} onChange={e => setTipoVenta(e.target.value)}>
                 <option value="MAYOR">Mayorista</option>
                 <option value="MENOR">Minorista</option>
               </select>
             </div>
             <div className="col-md-6">
-              <label className="form-label text-dark">Tipo Comprobante</label>
+              <label>Tipo Comprobante</label>
               <select className="form-select" value={tipoComprobante} onChange={e => setTipoComprobante(e.target.value)}>
                 <option value="BOLETA">Boleta</option>
                 <option value="FACTURA">Factura</option>
@@ -419,7 +419,7 @@ const VentasPage = () => {
               </select>
             </div>
             <div className="col-md-6">
-              <label className="form-label text-dark">Nº Comprobante</label>
+              <label>Nº Comprobante</label>
               <input type="text" className="form-control" value={numeroComprobante} onChange={e => setNumeroComprobante(e.target.value)} placeholder="Ej: B001-000123" />
             </div>
           </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 import './AuthPage.css';
 
 const AuthPage = () => {
@@ -26,7 +27,7 @@ const AuthPage = () => {
         if (res.success) {
             navigate('/panel');
         } else {
-            setError(res.message);
+            toast.error(res.message || "Credenciales inválidas");
         }
     };
 
@@ -37,7 +38,7 @@ const AuthPage = () => {
         if (res.success) {
             navigate('/panel');
         } else {
-            setError(res.message);
+            toast.error(res.message || "Error al registrarse");
         }
     };
 

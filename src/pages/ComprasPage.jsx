@@ -239,21 +239,21 @@ const ComprasPage = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="row mb-3 g-3">
                         <div className="col-md-6">
-                            <label className="form-label text-dark">Proveedor</label>
+                            <label>Proveedor</label>
                             <select className="form-select" value={proveedorId} onChange={(e) => setProveedorId(e.target.value)} required>
                                 <option value="">Seleccione...</option>
                                 {proveedores.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
                             </select>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label text-dark">Método Pago (Egreso)</label>
+                            <label>Método Pago (Egreso)</label>
                             <select className="form-select" value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)}>
                                 <option value="EFECTIVO">Efectivo</option>
                                 <option value="YAPE">Yape / Transferencia</option>
                             </select>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label text-dark">Comprobante</label>
+                            <label>Comprobante</label>
                             <select className="form-select" value={tipoComprobante} onChange={(e) => setTipoComprobante(e.target.value)}>
                                 <option value="FACTURA">Factura</option>
                                 <option value="BOLETA">Boleta</option>
@@ -261,7 +261,7 @@ const ComprasPage = () => {
                             </select>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label text-dark">Nro Comprobante</label>
+                            <label>Nro Comprobante</label>
                             <input type="text" className="form-control" value={numeroComprobante} onChange={(e) => setNumeroComprobante(e.target.value)} />
                         </div>
                     </div>
@@ -270,18 +270,18 @@ const ComprasPage = () => {
                     <h6 className="fw-bold text-dark">Materiales Comprados</h6>
                     <div className="row mb-3 g-2 align-items-end">
                         <div className="col-md-5">
-                            <label className="form-label form-label-sm text-dark">Material</label>
+                            <label className="form-label form-label-sm">Material</label>
                             <select className="form-select form-select-sm" value={materialId} onChange={(e) => setMaterialId(e.target.value)}>
                                 <option value="">Seleccione...</option>
                                 {materiales.map(m => <option key={m.id} value={m.id}>{m.nombre} ({m.unidad})</option>)}
                             </select>
                         </div>
                         <div className="col-md-3">
-                            <label className="form-label form-label-sm text-dark">Cant.</label>
+                            <label className="form-label form-label-sm">Cant.</label>
                             <input type="number" className="form-control form-control-sm" step="0.01" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
                         </div>
                         <div className="col-md-3">
-                            <label className="form-label form-label-sm text-dark">P. Unitario</label>
+                            <label className="form-label form-label-sm">P. Unitario</label>
                             <input type="number" className="form-control form-control-sm" step="0.01" value={precioUnitario} onChange={(e) => setPrecioUnitario(e.target.value)} />
                         </div>
                         <div className="col-md-1">
