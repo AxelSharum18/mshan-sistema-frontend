@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { 
   Home, ShoppingCart, Package, Users, Settings, LogOut,
-  Moon, Sun, ChevronDown, ArrowLeftRight, Tag, Truck, LayoutGrid
+  Moon, Sun, ChevronDown, ArrowLeftRight, Tag, Truck, LayoutGrid, Menu, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import './AdminLayout.css';
@@ -13,6 +13,8 @@ const AdminLayout = () => {
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const isMobile = window.innerWidth <= 768;
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -68,9 +70,13 @@ const AdminLayout = () => {
       
       {/* SIDEBAR */}
       <aside 
-        className={`sidebar ${isSidebarHovered ? 'expanded' : ''}`}
-        onMouseEnter={() => setIsSidebarHovered(true)}
-        onMouseLeave={() => setIsSidebarHovered(false)}
+        className={`sidebar ${
+  isMobile
+    ? (isMobileSidebarOpen ? 'expanded mobile-open' : '')
+    : (isSidebarHovered ? 'expanded' : '')
+}`}
+        onMouseEnter={() => !isMobile && setIsSidebarHovered(true)}
+        onMouseLeave={() => !isMobile && setIsSidebarHovered(false)}
       >
         <div className="sidebar-logo">
           <div className="logo-icon">M</div>
@@ -98,6 +104,14 @@ const AdminLayout = () => {
         {/* TOPBAR */}
         <header className="topbar">
           <div className="topbar-left">
+            {isMobile && (
+  <button
+    className="mobile-menu-btn"
+    onClick={() => setIsMobileSidebarOpen(prev => !prev)}
+  >
+    {isMobileSidebarOpen ? <X size={22} /> : <Menu size={22} />}
+  </button>
+)}
             <h2 className="page-title">Panel de Control · MSHAN</h2>
           </div>
 
