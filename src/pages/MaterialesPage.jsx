@@ -44,7 +44,7 @@ const MaterialesPage = () => {
                 nombre: formData.nombre,
                 unidad: formData.unidad,
                 precioUnitario: parseFloat(formData.precioUnitario),
-                stock: parseFloat(formData.stock),
+                stock: formData.id ? parseFloat(formData.stock) : 0,
                 proveedorId: parseInt(formData.proveedorId)
             };
             if (formData.id) {
@@ -152,17 +152,18 @@ const MaterialesPage = () => {
                         </div>
                     </div>
                     <div className="row mb-3 g-2">
-                        <div className="col-md-6">
-                            <label className="form-label text-dark">Stock Inicial</label>
-                            <input 
-                                type="number" 
-                                step="0.01" 
-                                className="form-control" 
-                                value={formData.stock} 
-                                onChange={(e) => setFormData({...formData, stock: e.target.value})} 
-                            />
-                        </div>
-                        <div className="col-md-6">
+                        {formData.id && (
+                            <div className="col-md-6">
+                                <label className="form-label text-dark">Stock Actual (Solo Lectura)</label>
+                                <input 
+                                    type="text" 
+                                    className="form-control bg-light" 
+                                    value={`${formData.stock} ${formData.unidad}`} 
+                                    disabled
+                                />
+                            </div>
+                        )}
+                        <div className={formData.id ? "col-md-6" : "col-md-12"}>
                             <label className="form-label text-dark">Proveedor Habitual</label>
                             <select 
                                 className="form-select" 

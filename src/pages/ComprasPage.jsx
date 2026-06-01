@@ -80,6 +80,8 @@ const ComprasPage = () => {
     const [detalles, setDetalles]               = useState([]);
 
     const [materialId, setMaterialId]           = useState('');
+    const [nuevoMaterialNombre, setNuevoMaterialNombre] = useState('');
+    const [nuevoMaterialUnidad, setNuevoMaterialUnidad] = useState('Metros');
     const [cantidad, setCantidad]               = useState(1);
     const [precioUnitario, setPrecioUnitario]   = useState(0);
 
@@ -112,18 +114,45 @@ const ComprasPage = () => {
     };
 
     const handleAddDetalle = () => {
-        if (!materialId || cantidad <= 0 || precioUnitario <= 0) {
-            toast.warn("Ingrese datos válidos");
+        if (cantidad <= 0 || precioUnitario <= 0) {
+            toast.warn("Ingrese cantidad y precio válidos");
             return;
         }
-        const material = materiales.find(m => m.id === parseInt(materialId));
-        setDetalles([...detalles, {
-            materialId: parseInt(materialId),
-            materialNombre: material.nombre,
-            cantidad: parseFloat(cantidad),
-            precioUnitario: parseFloat(precioUnitario)
-        }]);
-        setMaterialId(''); setCantidad(1); setPrecioUnitario(0);
+
+        if (materialId === 'NUEVO') {
+            if (!nuevoMaterialNombre.trim()) {
+                toast.warn("Ingrese el nombre del nuevo material");
+                return;
+            }
+            setDetalles([...detalles, {
+                materialId: null,
+                nuevoMaterialNombre,
+                nuevoMaterialUnidad,
+                materialNombre: `${nuevoMaterialNombre} (${nuevoMaterialUnidad})`,
+                cantidad: parseFloat(cantidad),
+                precioUnitario: parseFloat(precioUnitario)
+            }]);
+        } else {
+            if (!materialId) {
+                toast.warn("Seleccione un material");
+                return;
+            }
+            const material = materiales.find(m => m.id === parseInt(materialId));
+            setDetalles([...detalles, {
+                materialId: parseInt(materialId),
+                nuevoMaterialNombre: null,
+                nuevoMaterialUnidad: null,
+                materialNombre: material.nombre,
+                cantidad: parseFloat(cantidad),
+                precioUnitario: parseFloat(precioUnitario)
+            }]);
+        }
+
+        setMaterialId(''); 
+        setNuevoMaterialNombre(''); 
+        setNuevoMaterialUnidad('Metros');
+        setCantidad(1); 
+        setPrecioUnitario(0);
     };
 
     const handleRemoveDetalle = (index) => {
@@ -146,6 +175,8 @@ const ComprasPage = () => {
             metodoPago,
             detalles: detalles.map(d => ({
                 materialId: d.materialId,
+                nuevoMaterialNombre: d.nuevoMaterialNombre,
+                nuevoMaterialUnidad: d.nuevoMaterialUnidad,
                 cantidad: d.cantidad,
                 precioUnitario: d.precioUnitario
             }))
@@ -269,18 +300,37 @@ const ComprasPage = () => {
                     <hr />
                     <h6 className="fw-bold text-dark">Materiales Comprados</h6>
                     <div className="row mb-3 g-2 align-items-end">
-                        <div className="col-md-5">
+                        <div className={materialId === 'NUEVO' ? "col-md-2" : "col-md-5"}>
                             <label className="form-label form-label-sm">Material</label>
                             <select className="form-select form-select-sm" value={materialId} onChange={(e) => setMaterialId(e.target.value)}>
                                 <option value="">Seleccione...</option>
+                                <option value="NUEVO" className="text-primary fw-bold">[ + Crear Nuevo ]</option>
                                 {materiales.map(m => <option key={m.id} value={m.id}>{m.nombre} ({m.unidad})</option>)}
                             </select>
                         </div>
-                        <div className="col-md-3">
+                        {materialId === 'NUEVO' && (
+                            <>
+                                <div className="col-md-3">
+                                    <label className="form-label form-label-sm">Nombre Nuevo</label>
+                                    <input type="text" className="form-control form-control-sm" value={nuevoMaterialNombre} onChange={(e) => setNuevoMaterialNombre(e.target.value)} placeholder="Ej: Hilo de Nylon" />
+                                </div>
+                                <div className="col-md-2">
+                                    <label className="form-label form-label-sm">Unidad</label>
+                                    <select className="form-select form-select-sm" value={nuevoMaterialUnidad} onChange={(e) => setNuevoMaterialUnidad(e.target.value)}>
+                                        <option value="Metros">Metros</option>
+                                        <option value="Unidades">Unidades</option>
+                                        <option value="Rollos">Rollos</option>
+                                        <option value="Paquetes">Paquetes</option>
+                                        <option value="Kilos">Kilos</option>
+                                    </select>
+                                </div>
+                            </>
+                        )}
+                        <div className={materialId === 'NUEVO' ? "col-md-2" : "col-md-3"}>
                             <label className="form-label form-label-sm">Cant.</label>
                             <input type="number" className="form-control form-control-sm" step="0.01" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
                         </div>
-                        <div className="col-md-3">
+                        <div className={materialId === 'NUEVO' ? "col-md-2" : "col-md-3"}>
                             <label className="form-label form-label-sm">P. Unitario</label>
                             <input type="number" className="form-control form-control-sm" step="0.01" value={precioUnitario} onChange={(e) => setPrecioUnitario(e.target.value)} />
                         </div>

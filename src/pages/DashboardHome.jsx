@@ -31,7 +31,8 @@ const DashboardHome = () => {
   const [anio] = useState(new Date().getFullYear());
 
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-
+  const años = [anio - 2, anio - 1, anio];
+  
   useEffect(() => {
     fetchResumen();
   }, [mes]);
