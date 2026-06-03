@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { 
   Home, ShoppingCart, Package, Users, Settings, LogOut,
-  Moon, Sun, ChevronDown, ArrowLeftRight, Tag, Truck, LayoutGrid, Menu, X
+  Moon, Sun, ChevronDown, ArrowLeftRight, Tag, Truck, LayoutGrid, Menu, X, Factory
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import './AdminLayout.css';
@@ -68,7 +68,8 @@ const AdminLayout = () => {
     { path: '/panel/categorias',  name: 'Categorías',    icon: <Tag size={20} /> },
     { path: '/panel/clientes',    name: 'Clientes',      icon: <Users size={20} /> },
     { path: '/panel/proveedores', name: 'Proveedores',   icon: <Truck size={20} /> },
-    {path: '/panel/materiales', name: 'Materiales', icon: <Package size={20} />},
+    { path: '/panel/materiales',  name: 'Materiales',    icon: <Package size={20} /> },
+    { path: '/panel/produccion',  name: 'Producción',    icon: <Factory size={20} /> },
   ];
 
   return (
