@@ -260,6 +260,26 @@ const DashboardHome = () => {
           </div>
         </div>
 
+        {/* Saldos Históricos Totales */}
+        <div className="col-12 col-md-6">
+          <StatCard
+            title="Saldo Acumulado (Efectivo)"
+            value={fmt(resumen?.saldoHistoricoEfectivo)}
+            icon={<DollarSign size={22} color="#fff" />}
+            color="#198754"
+            loading={loading}
+          />
+        </div>
+        <div className="col-12 col-md-6">
+          <StatCard
+            title="Saldo Acumulado (Yape/Transfer)"
+            value={fmt(resumen?.saldoHistoricoYape)}
+            icon={<TrendingUp size={22} color="#fff" />}
+            color="#0d6efd"
+            loading={loading}
+          />
+        </div>
+
       </div>
     </div>
   );
