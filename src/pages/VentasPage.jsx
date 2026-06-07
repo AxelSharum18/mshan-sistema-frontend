@@ -12,6 +12,7 @@ const ModalPagos = ({ venta, onClose }) => {
   const [loading, setLoading]       = useState(true);
   const [monto, setMonto]           = useState('');
   const [metodoPago, setMetodoPago] = useState('EFECTIVO');
+  const [deudaGlobal, setDeudaGlobal] = useState(null);
 
   const totalVenta  = venta?.detalles?.reduce((s, d) => s + Number(d.subtotal ?? 0), 0) ?? 0;
   const totalPagado = pagos.reduce((s, p) => s + Number(p.monto ?? 0), 0);
@@ -19,8 +20,22 @@ const ModalPagos = ({ venta, onClose }) => {
   const progreso    = totalVenta > 0 ? Math.min(100, (totalPagado / totalVenta) * 100) : 0;
 
   useEffect(() => {
-    if (venta?.id) fetchPagos();
+    if (venta?.id) {
+      fetchPagos();
+      fetchDeudaGlobal();
+    }
   }, [venta]);
+
+  const fetchDeudaGlobal = async () => {
+    if (!venta?.cliente?.id) return;
+    try {
+      const { data } = await api.get(`/clientes/${venta.cliente.id}/deuda`);
+      setDeudaGlobal(data.deudaPendiente);
+    } catch {
+      // Ignorar si no tiene deuda o da 404
+      setDeudaGlobal(0);
+    }
+  };
 
   const fetchPagos = async () => {
     setLoading(true);
@@ -48,6 +63,7 @@ const ModalPagos = ({ venta, onClose }) => {
       toast.success(deuda - Number(monto) <= 0 ? '✅ Venta CANCELADA — pago completo' : 'Pago registrado');
       setMonto('');
       fetchPagos();
+      fetchDeudaGlobal();
     } catch {
       toast.error('Error al registrar pago');
     }
@@ -57,6 +73,12 @@ const ModalPagos = ({ venta, onClose }) => {
 
   return (
     <div>
+      {deudaGlobal > 0 && (
+        <div className="alert alert-danger py-2 mb-3 d-flex align-items-center fw-bold shadow-sm" style={{ borderLeft: '4px solid #dc3545' }}>
+          Deuda Global Acumulada del Cliente: S/ {Number(deudaGlobal).toFixed(2)}
+        </div>
+      )}
+
       <div className="p-3 mb-3 rounded-3" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)' }}>
         <div className="d-flex justify-content-between mb-1">
           <span style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>Venta #{venta?.id} · {venta?.cliente?.nombre}</span>

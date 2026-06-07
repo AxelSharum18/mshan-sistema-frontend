@@ -105,7 +105,7 @@ const DataTable = ({
                           style={{ fontSize: '0.75rem', padding: '3px 8px' }}
                           onClick={() => onEdit(row)}
                         >
-                          Editar
+                          <Pencil size={14} />
                         </button>
                       )}
                       {onDelete && (
@@ -114,7 +114,7 @@ const DataTable = ({
                           style={{ fontSize: '0.75rem', padding: '3px 8px' }}
                           onClick={() => onDelete(row)}
                         >
-                          Eliminar
+                           <Trash2 size={14} />
                         </button>
                       )}
                     </td>

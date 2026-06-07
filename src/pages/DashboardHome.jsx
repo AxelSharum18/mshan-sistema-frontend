@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { DollarSign, ShoppingBag, Package, TrendingUp, Loader } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, TrendingUp, Loader, AlertCircle } from 'lucide-react';
+import DataTable from '../components/DataTable';
 import api from '../api/axiosConfig';
 import './DashboardHome.css';
 
@@ -27,6 +28,7 @@ const StatCard = ({ title, value, icon, color, loading }) => (
 const DashboardHome = () => {
   const [resumen, setResumen] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deudas, setDeudas] = useState([]);
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [anio] = useState(new Date().getFullYear());
 
@@ -35,7 +37,17 @@ const DashboardHome = () => {
   
   useEffect(() => {
     fetchResumen();
+    fetchDeudas();
   }, [mes]);
+
+  const fetchDeudas = async () => {
+    try {
+      const { data } = await api.get('/clientes/deudas');
+      setDeudas(data || []);
+    } catch (err) {
+      console.error('Error al cargar deudas', err);
+    }
+  };
 
   const fetchResumen = async () => {
     setLoading(true);
@@ -91,6 +103,15 @@ const DashboardHome = () => {
 
       {/* Stat Cards */}
       <div className="row mb-4 g-3">
+        <div className="col-6 col-md-3">
+          <StatCard
+            title="Deuda Total Pendiente"
+            value={fmt(resumen?.deudaTotalGlobal)}
+            icon={<AlertCircle size={22} color="#fff" />}
+            color="#dc3545"
+            loading={loading}
+          />
+        </div>
         <div className="col-6 col-md-3">
           <StatCard
             title="Ventas del Mes"
@@ -160,7 +181,7 @@ const DashboardHome = () => {
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
                     <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
                     <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} />
-                    <Tooltip
+                    <RechartsTooltip
                       contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }}
                       formatter={(val) => `S/ ${val.toLocaleString('es-PE')}`}
                     />
@@ -202,7 +223,7 @@ const DashboardHome = () => {
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip
+                    <RechartsTooltip
                       contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }}
                       formatter={(val) => `${val} unidades`}
                     />
@@ -280,6 +301,41 @@ const DashboardHome = () => {
           />
         </div>
 
+      </div>
+
+      {/* Cuentas por Cobrar */}
+      <div className="row mt-2">
+        <div className="col-12">
+          <div className="dash-card">
+            <h5 className="dash-card-title mb-3">Cuentas por Cobrar (Deudas Pendientes)</h5>
+            {deudas.length === 0 ? (
+               <div className="text-center py-4 text-muted">No hay deudas pendientes en este momento.</div>
+            ) : (
+               <div className="table-responsive">
+                 <table className="table table-hover align-middle mb-0">
+                   <thead className="table-light">
+                     <tr>
+                       <th>Cliente</th>
+                       <th className="text-end">Total Comprado</th>
+                       <th className="text-end">Total Pagado</th>
+                       <th className="text-end text-danger">Deuda Pendiente</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {deudas.map((d, i) => (
+                       <tr key={i}>
+                         <td className="fw-bold">{d.nombreCliente}</td>
+                         <td className="text-end">{fmt(d.totalVentas)}</td>
+                         <td className="text-end text-success">{fmt(d.totalPagado)}</td>
+                         <td className="text-end fw-bold text-danger">{fmt(d.deudaPendiente)}</td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
