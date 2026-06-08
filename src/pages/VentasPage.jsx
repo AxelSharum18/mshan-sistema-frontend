@@ -107,7 +107,7 @@ const ModalPagos = ({ venta, onClose }) => {
         </div>
       </div>
 
-      <h6 className="fw-bold mb-2" style={{ color: 'var(--text-primary)' }}>Historial de Abonos</h6>
+      <h6 className="fw-bold mb-2 text-dark">Historial de Abonos</h6>
       {loading ? (
         <div className="text-center py-3" style={{ color: 'var(--text-secondary)' }}>Cargando...</div>
       ) : pagos.length === 0 ? (

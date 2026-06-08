@@ -31,10 +31,12 @@ const DashboardHome = () => {
   const [deudas, setDeudas] = useState([]);
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [anio] = useState(new Date().getFullYear());
+  const [modoGrafico, setModoGrafico] = useState('MES');
 
-  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   const años = [anio - 2, anio - 1, anio];
-  
+
+
   useEffect(() => {
     fetchResumen();
     fetchDeudas();
@@ -65,11 +67,18 @@ const DashboardHome = () => {
 
   // Map evolucionAnual -> recharts format
   // Backend DTO fields: mes, ingresos, egresos
-  const evolucionData = (resumen?.evolucionAnual ?? []).map(e => ({
-    name: meses[(e.mes ?? 1) - 1],
-    ingresos: Number(e.ingresos ?? 0),
-    egresos:  Number(e.egresos  ?? 0),
-  })).filter(e => e.ingresos > 0 || e.egresos > 0);
+  const evolucionData =
+    modoGrafico === 'MES'
+      ? (resumen?.evolucionAnual ?? []).map(e => ({
+        name: meses[(e.mes ?? 1) - 1],
+        ingresos: Number(e.ingresos ?? 0),
+        egresos: Number(e.egresos ?? 0),
+      }))
+      : (resumen?.evolucionDiaria ?? []).map(e => ({
+        name: e.dia.toString(),
+        ingresos: Number(e.ingresos ?? 0),
+        egresos: Number(e.egresos ?? 0),
+      }));
 
   // Top modelos (max 4) — Backend DTO fields: nombre, cantidadTotal
   const topModelosData = (resumen?.topModelos ?? []).slice(0, 4).map(m => ({
@@ -96,7 +105,27 @@ const DashboardHome = () => {
             value={mes}
             onChange={e => setMes(Number(e.target.value))}
           >
-            {meses.map((m, i) => <option key={i} value={i+1}>{m}</option>)}
+            {meses.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+          </select>
+
+          <label
+            className="mb-0 fw-semibold"
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '0.85rem'
+            }}
+          >
+            Vista:
+          </label>
+
+          <select
+            className="form-select form-select-sm"
+            style={{ width: 140 }}
+            value={modoGrafico}
+            onChange={e => setModoGrafico(e.target.value)}
+          >
+            <option value="MES">Por Mes</option>
+            <option value="DIA">Por Día</option>
           </select>
         </div>
       </div>
@@ -155,7 +184,12 @@ const DashboardHome = () => {
         {/* Area Chart — Evolución Anual */}
         <div className="col-12 col-md-8">
           <div className="dash-card h-100">
-            <h5 className="dash-card-title">Evolución de Ingresos y Egresos ({anio})</h5>
+            <h5 className="dash-card-title">
+              {modoGrafico === 'MES'
+                ? `Evolución de Ingresos y Egresos (${anio})`
+                : `Evolución Diaria - ${meses[mes - 1]} ${anio}`
+              }
+            </h5>
             {loading ? (
               <div className="d-flex align-items-center justify-content-center" style={{ height: 300 }}>
                 <Loader size={30} className="spin" style={{ color: 'var(--text-secondary)' }} />
@@ -170,16 +204,16 @@ const DashboardHome = () => {
                   <AreaChart data={evolucionData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gradIngresos" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%"  stopColor="#198754" stopOpacity={0.7} />
-                        <stop offset="95%" stopColor="#198754" stopOpacity={0}   />
+                        <stop offset="5%" stopColor="#198754" stopOpacity={0.7} />
+                        <stop offset="95%" stopColor="#198754" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="gradEgresos" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%"  stopColor="#dc3545" stopOpacity={0.7} />
-                        <stop offset="95%" stopColor="#dc3545" stopOpacity={0}   />
+                        <stop offset="5%" stopColor="#dc3545" stopOpacity={0.7} />
+                        <stop offset="95%" stopColor="#dc3545" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
-                    <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                    <XAxis dataKey="name" interval="preserveStartEnd" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
                     <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} />
                     <RechartsTooltip
                       contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }}
@@ -187,7 +221,7 @@ const DashboardHome = () => {
                     />
                     <Legend wrapperStyle={{ fontSize: 13 }} />
                     <Area type="monotone" dataKey="ingresos" stroke="#198754" strokeWidth={2} fillOpacity={1} fill="url(#gradIngresos)" name="Ingresos" />
-                    <Area type="monotone" dataKey="egresos"  stroke="#dc3545" strokeWidth={2} fillOpacity={1} fill="url(#gradEgresos)"  name="Egresos" />
+                    <Area type="monotone" dataKey="egresos" stroke="#dc3545" strokeWidth={2} fillOpacity={1} fill="url(#gradEgresos)" name="Egresos" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -309,30 +343,30 @@ const DashboardHome = () => {
           <div className="dash-card">
             <h5 className="dash-card-title mb-3">Cuentas por Cobrar (Deudas Pendientes)</h5>
             {deudas.length === 0 ? (
-               <div className="text-center py-4 text-muted">No hay deudas pendientes en este momento.</div>
+              <div className="text-center py-4 text-muted">No hay deudas pendientes en este momento.</div>
             ) : (
-               <div className="table-responsive">
-                 <table className="table table-hover align-middle mb-0">
-                   <thead className="table-light">
-                     <tr>
-                       <th>Cliente</th>
-                       <th className="text-end">Total Comprado</th>
-                       <th className="text-end">Total Pagado</th>
-                       <th className="text-end text-danger">Deuda Pendiente</th>
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {deudas.map((d, i) => (
-                       <tr key={i}>
-                         <td className="fw-bold">{d.nombreCliente}</td>
-                         <td className="text-end">{fmt(d.totalVentas)}</td>
-                         <td className="text-end text-success">{fmt(d.totalPagado)}</td>
-                         <td className="text-end fw-bold text-danger">{fmt(d.deudaPendiente)}</td>
-                       </tr>
-                     ))}
-                   </tbody>
-                 </table>
-               </div>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Cliente</th>
+                      <th className="text-end">Total Comprado</th>
+                      <th className="text-end">Total Pagado</th>
+                      <th className="text-end text-danger">Deuda Pendiente</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {deudas.map((d, i) => (
+                      <tr key={i}>
+                        <td className="fw-bold">{d.nombreCliente}</td>
+                        <td className="text-end">{fmt(d.totalVentas)}</td>
+                        <td className="text-end text-success">{fmt(d.totalPagado)}</td>
+                        <td className="text-end fw-bold text-danger">{fmt(d.deudaPendiente)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>

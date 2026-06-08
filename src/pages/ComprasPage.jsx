@@ -301,7 +301,7 @@ const ComprasPage = () => {
                     <h6 className="fw-bold text-dark">Materiales Comprados</h6>
                     <div className="row mb-3 g-2 align-items-end">
                         <div className={materialId === 'NUEVO' ? "col-md-2" : "col-md-5"}>
-                            <label className="form-label form-label-sm">Material</label>
+                            <label >Material</label>
                             <select className="form-select form-select-sm" value={materialId} onChange={(e) => setMaterialId(e.target.value)}>
                                 <option value="">Seleccione...</option>
                                 <option value="NUEVO" className="text-primary fw-bold">[ + Crear Nuevo ]</option>
@@ -311,11 +311,11 @@ const ComprasPage = () => {
                         {materialId === 'NUEVO' && (
                             <>
                                 <div className="col-md-3">
-                                    <label className="form-label form-label-sm">Nombre Nuevo</label>
+                                    <label>Nombre Nuevo</label>
                                     <input type="text" className="form-control form-control-sm" value={nuevoMaterialNombre} onChange={(e) => setNuevoMaterialNombre(e.target.value)} placeholder="Ej: Hilo de Nylon" />
                                 </div>
                                 <div className="col-md-2">
-                                    <label className="form-label form-label-sm">Unidad</label>
+                                    <label >Unidad</label>
                                     <select className="form-select form-select-sm" value={nuevoMaterialUnidad} onChange={(e) => setNuevoMaterialUnidad(e.target.value)}>
                                         <option value="Metros">Metros</option>
                                         <option value="Unidades">Unidades</option>
@@ -327,11 +327,11 @@ const ComprasPage = () => {
                             </>
                         )}
                         <div className={materialId === 'NUEVO' ? "col-md-2" : "col-md-3"}>
-                            <label className="form-label form-label-sm">Cant.</label>
+                            <label>Cant.</label>
                             <input type="number" className="form-control form-control-sm" step="0.01" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
                         </div>
                         <div className={materialId === 'NUEVO' ? "col-md-2" : "col-md-3"}>
-                            <label className="form-label form-label-sm">P. Unitario</label>
+                            <label >P. Unitario</label>
                             <input type="number" className="form-control form-control-sm" step="0.01" value={precioUnitario} onChange={(e) => setPrecioUnitario(e.target.value)} />
                         </div>
                         <div className="col-md-1">
