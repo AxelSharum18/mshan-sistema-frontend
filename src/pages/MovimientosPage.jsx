@@ -85,7 +85,7 @@ const MovimientosPage = () => {
             let badgeClass = 'secondary';
             if (row.tipo === 'INGRESO') badgeClass = 'success';
             else if (row.tipo === 'EGRESO') badgeClass = 'danger';
-            else if (row.tipo?.includes('TRANSFERENCIA')) badgeClass = 'info text-dark';
+            else if (row.tipo?.includes('TRANSF')) badgeClass = 'info text-dark';
             return (
                 <span className={`badge bg-${badgeClass}`}>
                     {row.tipo}
