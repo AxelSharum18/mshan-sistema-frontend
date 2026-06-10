@@ -15,6 +15,13 @@ const MovimientosPage = () => {
     const [descripcion, setDescripcion] = useState('');
     const [metodoPago, setMetodoPago] = useState('EFECTIVO');
 
+    // Transferencia Interna state
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+    const [transferMonto, setTransferMonto] = useState('');
+    const [transferOrigen, setTransferOrigen] = useState('YAPE');
+    const [transferDestino, setTransferDestino] = useState('EFECTIVO');
+    const [transferDesc, setTransferDesc] = useState('');
+
     useEffect(() => {
         fetchMovimientos();
     }, []);
@@ -44,18 +51,47 @@ const MovimientosPage = () => {
             setMonto(''); setDescripcion('');
             fetchMovimientos();
         } catch (error) {
-            toast.error("Error al registrar movimiento");
+            toast.error(error.response?.data?.message || "Error al registrar movimiento");
+        }
+    };
+
+    const handleTransferSubmit = async (e) => {
+        e.preventDefault();
+        if (transferOrigen === transferDestino) {
+            toast.error("La cuenta de origen y destino deben ser diferentes");
+            return;
+        }
+        try {
+            await api.post('/movimientos/transferencia', {
+                monto: parseFloat(transferMonto),
+                cuentaOrigen: transferOrigen,
+                cuentaDestino: transferDestino,
+                descripcion: transferDesc || 'Transferencia interna',
+                fecha: new Date().toISOString().split('T')[0],
+            });
+            toast.success("Transferencia registrada con éxito");
+            setIsTransferModalOpen(false);
+            setTransferMonto(''); setTransferDesc('');
+            fetchMovimientos();
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Error al registrar transferencia");
         }
     };
 
     const columns = [
         { header: 'ID', accessor: 'id' },
         { header: 'Fecha', accessor: 'fecha' },
-        { header: 'Tipo', render: (row) => (
-            <span className={`badge bg-${row.tipo === 'INGRESO' ? 'success' : 'danger'}`}>
-                {row.tipo}
-            </span>
-        )},
+        { header: 'Tipo', render: (row) => {
+            let badgeClass = 'secondary';
+            if (row.tipo === 'INGRESO') badgeClass = 'success';
+            else if (row.tipo === 'EGRESO') badgeClass = 'danger';
+            else if (row.tipo?.includes('TRANSFERENCIA')) badgeClass = 'info text-dark';
+            return (
+                <span className={`badge bg-${badgeClass}`}>
+                    {row.tipo}
+                </span>
+            );
+        }},
         { header: 'Descripción', accessor: 'descripcion' },
         { header: 'Monto', render: (row) => `S/ ${row.monto}` },
         { header: 'Método', accessor: 'cuenta' },
@@ -73,6 +109,7 @@ const MovimientosPage = () => {
                     >
                         <FileDown size={15} className="me-1" />Exportar Excel
                     </button>
+                    <button className="btn btn-secondary" onClick={() => setIsTransferModalOpen(true)}>+ Transferencia Interna</button>
                     <button className="btn btn-dark" onClick={() => setIsModalOpen(true)}>+ Registrar Movimiento</button>
                 </div>
             </div>
@@ -107,6 +144,38 @@ const MovimientosPage = () => {
                     </div>
                     <div className="text-end mt-4">
                         <button type="submit" className="btn btn-dark">Guardar</button>
+                    </div>
+                </form>
+            </Modal>
+
+            <Modal isOpen={isTransferModalOpen} onClose={() => setIsTransferModalOpen(false)} title="Transferencia Interna">
+                <form onSubmit={handleTransferSubmit}>
+                    <div className="row mb-3">
+                        <div className="col-6">
+                            <label>Cuenta Origen (Retiro)</label>
+                            <select className="form-select" value={transferOrigen} onChange={(e) => setTransferOrigen(e.target.value)}>
+                                <option value="YAPE">Yape / Plin / Transferencia</option>
+                                <option value="EFECTIVO">Efectivo</option>
+                            </select>
+                        </div>
+                        <div className="col-6">
+                            <label>Cuenta Destino (Depósito)</label>
+                            <select className="form-select" value={transferDestino} onChange={(e) => setTransferDestino(e.target.value)}>
+                                <option value="EFECTIVO">Efectivo</option>
+                                <option value="YAPE">Yape / Plin / Transferencia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="mb-3">
+                        <label>Monto a Transferir (S/)</label>
+                        <input type="number" step="0.01" className="form-control" value={transferMonto} onChange={(e) => setTransferMonto(e.target.value)} required />
+                    </div>
+                    <div className="mb-3">
+                        <label>Descripción (Opcional)</label>
+                        <textarea className="form-control" rows="2" placeholder="Ej: Retiro de efectivo desde Yape" value={transferDesc} onChange={(e) => setTransferDesc(e.target.value)}></textarea>
+                    </div>
+                    <div className="text-end mt-4">
+                        <button type="submit" className="btn btn-primary">Realizar Transferencia</button>
                     </div>
                 </form>
             </Modal>
